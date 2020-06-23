@@ -6,61 +6,68 @@ import (
 	"strings"
 )
 
-func agrupar(list string) (string, error) {
+const listSeparator = ", "
 
-	s := strings.SplitN(list, ", ", -1)
-	var pilha = []int{}
+func getIntervals(intervals []string) string {
+	return strings.Join(intervals, listSeparator)
+}
+
+func madeList(value string) []string {
+	return strings.SplitN(value, listSeparator, -1)
+}
+
+func getInterval(min int, max int) string {
+
+	start := strconv.Itoa(min)
+	end := strconv.Itoa(max)
+	interval := "[" + start + "-" + end + "]"
+	if start == end {
+		interval = "[" + end + "]"
+	}
+
+	return interval
+}
+
+func groupBy(stack []int, group *[]string) {
+
+	sort.Ints(stack)
+
+	min := stack[0]
+	max := stack[len(stack)-1]
+	interval := getInterval(min, max)
+	*group = append(*group, interval)
+
+}
+
+func agrupar(value string) (string, error) {
+
+	list := madeList(value)
+	var stack = []int{}
 	var result = []string{}
-	for index, element := range s {
+	for index, element := range list {
 		j, _ := strconv.Atoi(element)
 		if index == 0 {
-			pilha = append(pilha, j)
+			stack = append(stack, j)
 		} else {
-			old, _ := strconv.Atoi(s[index-1])
+			old, _ := strconv.Atoi(list[index-1])
 			if j-1 == old {
-				pilha = append(pilha, j)
-
-				if index == len(s)-1 {
-					sort.Ints(pilha)
-					min := strconv.Itoa(pilha[0])
-					max := strconv.Itoa(pilha[len(pilha)-1])
-					if min == max {
-						result = append(result, "["+max+"]")
-					} else {
-						result = append(result, "["+min+"-"+max+"]")
-					}
+				stack = append(stack, j)
+				if index == len(list)-1 {
+					groupBy(stack, &result)
 				}
-
 				continue
 			}
 
-			sort.Ints(pilha)
-			min := strconv.Itoa(pilha[0])
-			max := strconv.Itoa(pilha[len(pilha)-1])
-
-			if min == max {
-				result = append(result, "["+max+"]")
-			} else {
-				result = append(result, "["+min+"-"+max+"]")
-			}
-			pilha = nil
-			pilha = append(pilha, j)
-
-			if index == len(s)-1 {
-				sort.Ints(pilha)
-				min := strconv.Itoa(pilha[0])
-				max := strconv.Itoa(pilha[len(pilha)-1])
-				if min == max {
-					result = append(result, "["+max+"]")
-				} else {
-					result = append(result, "["+min+"-"+max+"]")
-				}
+			groupBy(stack, &result)
+			stack = nil
+			stack = append(stack, j)
+			if index == len(list)-1 {
+				groupBy(stack, &result)
 			}
 		}
 	}
 
-	str := strings.Join(result, ", ")
-	return str, nil
+	return getIntervals(result), nil
 }
 
 func main() {
