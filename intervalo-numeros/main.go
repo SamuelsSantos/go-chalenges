@@ -1,7 +1,11 @@
 package main
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
+	"io"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,8 +20,15 @@ func getIntervals(intervals []string) string {
 	return strings.Join(intervals, listSeparator)
 }
 
-func makeList(value string) Input {
-	return strings.SplitN(value, listSeparator, -1)
+func isEmpty(text string) bool {
+	return strings.TrimSpace(text) == ""
+}
+
+func makeList(value string) (Input, error) {
+	if isEmpty(value) {
+		return nil, errors.New("Entrada inválida")
+	}
+	return strings.SplitN(value, listSeparator, -1), nil
 }
 
 func (b *Input) makeOrderedIntList() ([]int, error) {
@@ -28,9 +39,8 @@ func (b *Input) makeOrderedIntList() ([]int, error) {
 		var value int
 		var err error
 		if value, err = strconv.Atoi(element); err != nil {
-			return nil, err
+			return nil, errors.New("Entrada inválida")
 		}
-
 		stack[index] = value
 	}
 
@@ -55,9 +65,8 @@ func makeInterval(stack []int, group *[]string) {
 	*group = append(*group, interval)
 }
 
-func doProcessar(value string) (string, error) {
+func doFindIntervals(input Input) (string, error) {
 
-	input := makeList(value)
 	var list []int
 	var err error
 	if list, err = input.makeOrderedIntList(); err != nil {
@@ -91,6 +100,25 @@ func doProcessar(value string) (string, error) {
 	return getIntervals(result), nil
 }
 
-func main() {
+func doProcess(stdIn io.Reader) (string, error) {
 
+	var input Input
+	var err error
+
+	fmt.Print("Entrada: ")
+	scanner := bufio.NewScanner(stdIn)
+	scanner.Scan()
+	if input, err = makeList(scanner.Text()); err != nil {
+		return "", err
+	}
+	return doFindIntervals(input)
+
+}
+
+func main() {
+	if output, err := doProcess(os.Stdin); err != nil {
+		fmt.Printf("Falha %v\n", err)
+	} else {
+		fmt.Printf("Saída: %v", output)
+	}
 }
