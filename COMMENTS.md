@@ -6,10 +6,14 @@
   - Refatoração
 
 ### Validações
+  - Validar se a lista é válida:
+    - Vazia
+    - Somente números inteiros
+    Retorna Entrada Inválida
   
 
 ### Melhorias
-  - Aceitar uma lista desordenada, ordenar e agrupar os intervalos
+  - Aceitar uma lista desordenada, ordenar e agrupar os intervalos / Done!
 
 
 ## 2 - Troco
@@ -22,6 +26,7 @@
   - Acabei criando mais tipagens para poder fazer map de troco mais legível e testavel
 - Criei um método só para printar o recibo
 - Precisei de um work around, ao criar o teste onde tinha que dividir o 14.20 /10.0 retorna 4.1999999999999, então precisei criar o método formatFloat 
+- Ajuste passagem parametro os.stdIn
 
 ### Validações
  - Inclui validação quando os valores digitados estão incorretos

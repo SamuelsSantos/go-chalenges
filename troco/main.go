@@ -83,8 +83,8 @@ func (b *ChangesCoins) getChange(value float64, coins []Coin) *ChangesCoins {
 	return (*b).getChange(mod, coins[index:])
 }
 
-func readFloat() (float64, error) {
-	scanner := bufio.NewScanner(os.Stdin)
+func readFloat(stdIn io.Reader) (float64, error) {
+	scanner := bufio.NewScanner(stdIn)
 	scanner.Scan()
 	in := strings.Replace(scanner.Text(), ",", ".", 1)
 	return strconv.ParseFloat(in, 64)
@@ -97,13 +97,13 @@ func doProcess(stdIn io.Reader) (float64, *ChangesCoins, error) {
 	var err error
 
 	fmt.Print("Valor a ser pago: R$ ")
-	if amountPayable, err = readFloat(); err != nil {
+	if amountPayable, err = readFloat(stdIn); err != nil {
 		fmt.Printf("Falha: %+v\n", err)
 		return 0, nil, err
 	}
 
 	fmt.Print("Valor efetivamente pago: R$  ")
-	if amountPaid, err = readFloat(); err != nil {
+	if amountPaid, err = readFloat(stdIn); err != nil {
 		fmt.Printf("Falha: %+v\n", err)
 		return 0, nil, err
 	}
