@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 )
 
@@ -117,4 +118,78 @@ func TestMain(t *testing.T) {
 			)
 		}
 	})
+
+	t.Run("When_DoProcess{Value:35.0-Paid:50.0}_The_Result_[{5}:1 {10}:1]", func(t *testing.T) {
+
+		var expected = 15.0
+		result, _, err := doProcess("35.0", "50.0")
+
+		if err != nil {
+			t.Error(
+				"expected", nil,
+				"got", err,
+			)
+		}
+
+		if result != expected {
+			t.Error(
+				"expected", expected,
+				"got", result,
+			)
+		}
+	})
+
+	t.Run("When_DoProcess{Empty,Value}_The_Result_Error", func(t *testing.T) {
+
+		var expected error
+		_, _, err := doProcess("", "60")
+
+		if err == nil {
+			t.Error(
+				"expected", expected,
+				"got", err,
+			)
+		}
+	})
+
+	t.Run("When_DoProcess{Empty,Paid}_The_Result_Error", func(t *testing.T) {
+
+		var expected error
+		_, _, err := doProcess("40.0", "")
+
+		if err == nil {
+			t.Error(
+				"expected", expected,
+				"got", err,
+			)
+		}
+	})
+
+	t.Run("When_DoProcess{Empty}_The_Result_Error", func(t *testing.T) {
+
+		var expected error
+		_, _, err := doProcess("40.0", "35.00")
+
+		if err == nil {
+			t.Error(
+				"expected", expected,
+				"got", err,
+			)
+		}
+	})
+
+	t.Run("When_DoProcess{Empty}_The_Result_Error", func(t *testing.T) {
+
+		var stdin bytes.Buffer
+		stdin.Write([]byte("30.00"))
+		var expected = "30.00"
+		var result string
+		if result = readInfo(&stdin, "Value"); result != expected {
+			t.Error(
+				"expected", expected,
+				"got", result,
+			)
+		}
+	})
+
 }

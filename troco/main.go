@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -83,44 +84,50 @@ func (b *ChangesCoins) getChange(value float64, coins []Coin) *ChangesCoins {
 	return (*b).getChange(mod, coins[index:])
 }
 
-func readFloat(stdIn io.Reader) (float64, error) {
-	scanner := bufio.NewScanner(stdIn)
-	scanner.Scan()
-	in := strings.Replace(scanner.Text(), ",", ".", 1)
-	return strconv.ParseFloat(in, 64)
+func isValidValue(amount string) (float64, error) {
+	return strconv.ParseFloat(strings.Replace(amount, ",", ".", 1), 64)
 }
 
-func doProcess(stdIn io.Reader) (float64, *ChangesCoins, error) {
+func readInfo(stdIn io.Reader, question string) string {
+	fmt.Print(question)
+	scanner := bufio.NewScanner(stdIn)
+	scanner.Scan()
+	return scanner.Text()
+}
 
-	var amountPaid float64
-	var amountPayable float64
+func doProcess(amountPayable, amountPaid string) (float64, *ChangesCoins, error) {
+
 	var err error
+	var payable float64
+	var paid float64
 
-	fmt.Print("Valor a ser pago: R$ ")
-	if amountPayable, err = readFloat(stdIn); err != nil {
+	if payable, err = isValidValue(amountPayable); err != nil {
 		fmt.Printf("Falha: %+v\n", err)
 		return 0, nil, err
 	}
 
-	fmt.Print("Valor efetivamente pago: R$  ")
-	if amountPaid, err = readFloat(stdIn); err != nil {
+	if paid, err = isValidValue(amountPaid); err != nil {
 		fmt.Printf("Falha: %+v\n", err)
 		return 0, nil, err
 	}
 
-	if amountPaid < amountPayable {
-		fmt.Printf("Falha: %+v\n", "O valor efetivamente pago é menor do que o valor a ser pago.")
-		return 0, nil, err
+	if paid < payable {
+		return 0, nil, errors.New("O valor efetivamente pago é menor do que o valor a ser pago")
 	}
 
-	change := math.Abs(amountPayable - amountPaid)
+	change := math.Abs(payable - paid)
 	changeCoins := &ChangesCoins{}
 	changeCoins.getChange(change, getCoins())
 	return change, changeCoins, nil
 }
 
 func main() {
-	if change, changeCoins, err := doProcess(os.Stdin); err != nil {
+
+	amountPayable := readInfo(os.Stdin, "Valor a ser pago: R$ ")
+	amountPaid := readInfo(os.Stdin, "Valor efetivamente pago: R$ ")
+
+	if change, changeCoins, err := doProcess(amountPayable, amountPaid); err != nil {
+		fmt.Printf("Falha: %+v.\n", err)
 		os.Exit(1)
 	} else {
 		changeCoins.receipt(change)
