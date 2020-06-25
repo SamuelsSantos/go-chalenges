@@ -1,6 +1,8 @@
 # Desafio Técnico para Seleção Globo.com
 # Desenvolvedor BackEnd - Integração
 
+![Go](https://github.com/SelecaoGlobocom/JV-Samuel-Santos/workflows/Go/badge.svg)
+
 ## Considerações Gerais
 
 Você deverá usar este repositório como o principal do projeto. Todos os seus commits devem estar registrados aqui.
@@ -146,14 +148,14 @@ A entrada provida deve ser no formato `<numero flutuante>`, ex: `0.16`. A unidad
 
 ### Exemplos de entradas e saídas esperadas pelo seu programa
 
-| Entrada | Saída |
-| ------ | ------ |
-| 30 ms | `30 ms` |
-| 5000 ms | `5 s` |
+| Entrada    | Saída   |
+| ---------- | ------- |
+| 30 ms      | `30 ms` |
+| 5000 ms    | `5 s`   |
 | 5400000 ms | `1.5 h` |
-| 0.14 | `14%` |
-| 50 B | `50 B` |
-| 2000 B | `2 kB` |
+| 0.14       | `14%`   |
+| 50 B       | `50 B`  |
+| 2000 B     | `2 kB`  |
 
 
 ## 5 - Paredão BBB
