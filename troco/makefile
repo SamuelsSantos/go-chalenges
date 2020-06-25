@@ -1,10 +1,11 @@
+NAME := troco
 troco:
 	echo "Troco"
 
 build:
-	go build -o bin/main main.go
+	go build -o bin/$(NAME) main.go
 
-test: 	
+test:
 	mkdir -p ./coverage
 	go test -v -coverprofile=./coverage/tests.out
 	go tool cover -html=./coverage/tests.out -o ./coverage/coverage-report.html
@@ -15,8 +16,8 @@ run:
 
 compile:
 	echo "Compiling for every OS and Platform"
-	GOOS=linux GOARCH=arm go build -o bin/main-linux-arm main.go
-	GOOS=linux GOARCH=arm64 go build -o bin/main-linux-arm64 main.go
-	GOOS=freebsd GOARCH=386 go build -o bin/main-freebsd-386 main.go
+	GOOS=linux GOARCH=arm go build -o bin/$(NAME)-linux-arm main.go
+	GOOS=linux GOARCH=arm64 go build -o bin/$(NAME)-numero-linux-arm64 main.go
+	GOOS=freebsd GOARCH=386 go build -o bin/$(NAME)-numero-freebsd-386 main.go
 
-all: troco build
+all: $(NAME) build
