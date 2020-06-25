@@ -4,6 +4,8 @@
   - Primeira versão para validar o raciocinio
   - Inclusão de testes
   - Refatoração
+  - Incluir Makefile
+  - Aumentar cobertura de código/Refatoração
 
 ### Validações
   - Validar se a lista é válida:
@@ -20,13 +22,15 @@
 
 ### Histórico
 
-- Fiz um código usando estrutura de repetição depois alterei para recursão
-- Para conversão da moeda no poderiamos usar o [currency](https://godoc.org/golang.org/x/text/currency#example-Query), mas optei em fazer o replace ",", "." para evitar usar outros pacotes.
-- Para deixar o código testável eu precisei refator, fazer teste pegando o print no console não acho legal. 
+  - Fiz um código usando estrutura de repetição depois alterei para recursão
+  - Para conversão da moeda no poderiamos usar o [currency](https://godoc.org/golang.org/x/text/currency#example-Query), mas optei em fazer o replace ",", "." para evitar usar outros pacotes.
+  - Para deixar o código testável eu precisei refator, fazer teste pegando o print no console não acho legal. 
   - Acabei criando mais tipagens para poder fazer map de troco mais legível e testavel
-- Criei um método só para printar o recibo
-- Precisei de um work around, ao criar o teste onde tinha que dividir o 14.20 /10.0 retorna 4.1999999999999, então precisei criar o método formatFloat 
-- Ajuste passagem parametro os.stdIn
+  - Criei um método só para printar o recibo
+  - Precisei de um work around, ao criar o teste onde tinha que dividir o 14.20 /10.0 retorna 4.1999999999999, então precisei criar o método formatFloat 
+  - Ajuste passagem parametro os.stdIn
+  - Incluir Makefile
+  - Aumentar cobertura de código/Refatoração
 
 ### Validações
  - Inclui validação quando os valores digitados estão incorretos
@@ -48,7 +52,9 @@
   - Primeira versão para validar o raciocínio
   - Inclusão de testes
   - Refatoração com recursão
-  - Fix pacote r
+  - Fix pacote rand
+  - Incluir Makefile
+  - Aumentar cobertura de código/Refatoração
 
 ### Validações
   - Validar se os dados dos personagens foram preenchidos corretamente:
