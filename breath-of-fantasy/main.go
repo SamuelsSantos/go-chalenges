@@ -55,31 +55,19 @@ func (heroi *Player) atack(factor LuckFactor, inimigo *Player) *Player {
 	return inimigo
 }
 
-func round(playerOne *Player, playerTwo *Player, roulette rand.Roulette) *Player {
-	if playerOne.Energy <= 0 {
-		return playerTwo
-	}
+func round(heroi *Player, inimigo *Player, roulette rand.Roulette) *Player {
 
-	if playerTwo.Energy <= 0 {
-		return playerOne
-	}
-
-	fmt.Printf("%v atacou %v\n", playerOne.Nome, playerTwo.Nome)
+	fmt.Printf("%v atacou %v\n", heroi.Nome, inimigo.Nome)
 	luckFactor := getLockFactor(roulette.Get())
-	playerOne.atack(luckFactor, playerTwo)
-	return round(playerTwo, playerOne, roulette)
+	heroi.atack(luckFactor, inimigo)
+
+	if inimigo.Energy <= 0 {
+		return heroi
+	}
+	return round(inimigo, heroi, roulette)
 }
 
-func fight(playerOne *Player, playerTwo *Player) {
-
-	var randonNumber = rand.LuckNumber{}
-
-	fmt.Printf("Batalha entre %v e %v \n", playerOne.Nome, playerTwo.Nome)
-	winner := round(playerOne, playerTwo, randonNumber)
-	fmt.Printf("Jogo acabou, o vencedor foi %v com HP restante de %v\n", winner.Nome, winner.Energy)
-}
-
-func isValid(data string) ([]string, error) {
+func isValidInput(data string) ([]string, error) {
 
 	if isEmpty(data) {
 		return nil, errors.New("Entrada inválida")
@@ -91,12 +79,6 @@ func isValid(data string) ([]string, error) {
 		return nil, errors.New("Entrada inválida")
 	}
 
-	for _, element := range personagem {
-		if isEmpty(element) {
-			return nil, errors.New("Entrada inválida")
-		}
-	}
-
 	return personagem, nil
 }
 
@@ -104,27 +86,32 @@ func readPlayer(data string) (*Player, error) {
 
 	var err error
 	var personagem []string
-	if personagem, err = isValid(data); err != nil {
+	var energy int
+	var power int
+
+	if personagem, err = isValidInput(data); err != nil {
 		return nil, err
+	}
+
+	if energy, err = strconv.Atoi(personagem[1]); err != nil {
+		return nil, errors.New("Entrada inválida")
+	}
+
+	if power, err = strconv.Atoi(personagem[2]); err != nil {
+		return nil, errors.New("Entrada inválida")
 	}
 
 	player := Player{}
 	player.Nome = personagem[0]
-	if player.Energy, err = strconv.Atoi(personagem[1]); err != nil {
-		return nil, errors.New("Entrada inválida")
-	}
-
-	if player.Power, err = strconv.Atoi(personagem[2]); err != nil {
-		return nil, errors.New("Entrada inválida")
-	}
-
+	player.Power = power
+	player.Energy = energy
 	return &player, nil
-
 }
 
 func main() {
 
 	scanner := bufio.NewScanner(os.Stdin)
+	var randonNumber = rand.LuckNumber{}
 	fmt.Println("Entre a primeira personagem: ")
 	scanner.Scan()
 	var playerOne *Player
@@ -143,10 +130,14 @@ func main() {
 	}
 
 	first := rand.GetPlayerStart()
+	var winner *Player
 	if first == 0 {
-		fight(playerOne, playerTwo)
+		fmt.Printf("Batalha entre %v e %v \n", playerOne.Nome, playerTwo.Nome)
+		winner = round(playerOne, playerTwo, randonNumber)
 	} else {
-		fight(playerTwo, playerOne)
+		fmt.Printf("Batalha entre %v e %v \n", playerTwo.Nome, playerOne.Nome)
+		winner = round(playerTwo, playerOne, randonNumber)
 	}
+	fmt.Printf("Jogo acabou, o vencedor foi %v com HP restante de %v\n", winner.Nome, winner.Energy)
 
 }
