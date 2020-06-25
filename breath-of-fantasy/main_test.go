@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 )
 
@@ -233,6 +234,56 @@ func TestMain(t *testing.T) {
 		if err == nil {
 			t.Error(
 				"expected", expect,
+				"got", err,
+			)
+		}
+	})
+
+	t.Run("When_ReadInfo_The_Result_Whithou_Error", func(t *testing.T) {
+
+		var stdin bytes.Buffer
+		stdin.Write([]byte("A 1 1"))
+		var expected = "A 1 1"
+		var result string
+		if result = readInfo(&stdin, "Value"); result != expected {
+			t.Error(
+				"expected", expected,
+				"got", result,
+			)
+		}
+	})
+
+	t.Run("When_DoProcess{Player1 50, Player2 30 40}_The_Result_Error", func(t *testing.T) {
+
+		var expected error
+		_, err := doProcess("Player1 50", "Player2 30 40")
+		if err == nil {
+			t.Error(
+				"expected", expected,
+				"got", err,
+			)
+		}
+	})
+
+	t.Run("When_DoProcess{Player1 40 50, Player2 40}_The_Result_Error", func(t *testing.T) {
+
+		var expected error
+		_, err := doProcess("Player1 40 50", "Player2 40")
+		if err == nil {
+			t.Error(
+				"expected", expected,
+				"got", err,
+			)
+		}
+	})
+
+	t.Run("When_DoProcess{Player1 40 50, Player2 30 40}_The_Result_Without_Error", func(t *testing.T) {
+
+		var expected error = nil
+		_, err := doProcess("Player1 40 50", "Player2 30 40")
+		if err != nil {
+			t.Error(
+				"expected", expected,
 				"got", err,
 			)
 		}

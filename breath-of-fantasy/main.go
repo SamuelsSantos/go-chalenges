@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"strconv"
@@ -82,6 +83,13 @@ func isValidInput(data string) ([]string, error) {
 	return personagem, nil
 }
 
+func readInfo(in io.Reader, question string) string {
+	scanner := bufio.NewScanner(in)
+	fmt.Println(question)
+	scanner.Scan()
+	return scanner.Text()
+}
+
 func readPlayer(data string) (*Player, error) {
 
 	var err error
@@ -108,25 +116,20 @@ func readPlayer(data string) (*Player, error) {
 	return &player, nil
 }
 
-func main() {
+func doProcess(one, two string) (*Player, error) {
 
-	scanner := bufio.NewScanner(os.Stdin)
 	var randonNumber = rand.LuckNumber{}
-	fmt.Println("Entre a primeira personagem: ")
-	scanner.Scan()
+
 	var playerOne *Player
 	var playerTwo *Player
 	var err error
-	if playerOne, err = readPlayer(scanner.Text()); err != nil {
-		fmt.Printf("\nFalha: %v\n", err)
-		os.Exit(1)
+
+	if playerOne, err = readPlayer(one); err != nil {
+		return nil, err
 	}
 
-	fmt.Println("Entre a segunda personagem: ")
-	scanner.Scan()
-	if playerTwo, err = readPlayer(scanner.Text()); err != nil {
-		fmt.Printf("\nFalha: %v\n", err)
-		os.Exit(1)
+	if playerTwo, err = readPlayer(two); err != nil {
+		return nil, err
 	}
 
 	first := rand.GetPlayerStart()
@@ -138,6 +141,17 @@ func main() {
 		fmt.Printf("Batalha entre %v e %v \n", playerTwo.Nome, playerOne.Nome)
 		winner = round(playerTwo, playerOne, randonNumber)
 	}
-	fmt.Printf("Jogo acabou, o vencedor foi %v com HP restante de %v\n", winner.Nome, winner.Energy)
+	return winner, nil
+}
 
+func main() {
+	one := readInfo(os.Stdin, "Entre a primeira personagem: ")
+	two := readInfo(os.Stdin, "Entre a segunda personagem: ")
+
+	if winner, err := doProcess(one, two); err != nil {
+		fmt.Printf("\nFalha: %v\n", err)
+		os.Exit(1)
+	} else {
+		fmt.Printf("Jogo acabou, o vencedor foi %v com HP restante de %v\n", winner.Nome, winner.Energy)
+	}
 }
