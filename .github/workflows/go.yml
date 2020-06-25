@@ -1,0 +1,49 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.13
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+        if [ -f Gopkg.toml ]; then
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+        fi
+
+    - name: Build Troco
+      run: go build -o ./troco/bin/troco ./troco/main.go
+
+    - name: Test Troco
+      run: go test ./troco/. -v -cover 
+    
+    - name: Build Intervalo
+      run: go build -o ./intervalo-numeros/bin/troco ./intervalo-numeros/main.go
+
+    - name: Test Intervalo
+      run: go test ./intervalo-numeros/. -v -cover 
+    
+    - name: Build Breath Of Fantasy
+      run: go build -o ./breath-of-fantasy/bin/troco ./breath-of-fantasy/main.go
+
+    - name: Test Breath Of Fantasy
+      run: go test ./breath-of-fantasy/. -v -cover 
