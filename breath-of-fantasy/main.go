@@ -1,7 +1,7 @@
 package main
 
 import (
-	"JV-Samuel-Santos/troco/rand"
+	"JV-Samuel-Santos/breath-of-fantasy/rand"
 	"bufio"
 	"errors"
 	"fmt"

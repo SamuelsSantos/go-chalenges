@@ -1,7 +1,7 @@
 ## 1 - Intervalo de Números
 
 ### Histórico
-  - Primeira versão para validar o raciocionio
+  - Primeira versão para validar o raciocinio
   - Inclusão de testes
   - Refatoração
 
@@ -40,3 +40,24 @@
     Additional common currencies as defined by CLDR.
     BRL Unit = Unit{brl}
 - Fazer a quebra de caixa com o arredamento quando houver troco inferior ao menor valor da lista de moedas.
+
+
+## 3 - Breath Fantasy
+
+### Histórico
+  - Primeira versão para validar o raciocínio
+  - Inclusão de testes
+  - Refatoração com recursão
+  - Fix pacote r
+
+### Validações
+  - Validar se os dados dos personagens foram preenchidos corretamente:
+    - Nome não vazio
+    - Poder não vazio e somente número inteiro
+    - Energia não vazio e somente número inteiro
+  Retorna Entrada Inválida
+  
+
+### Melhorias
+  - Fazer W.0 ou limitar o número de rounds, colocar timer ou correlacionados.
+  - Ataque simultaneo
