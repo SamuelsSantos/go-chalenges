@@ -65,5 +65,56 @@
   
 
 ### Melhorias
-  - Fazer W.0 ou limitar o número de rounds, colocar timer ou correlacionados.
+  - Fazer W.0 ou limitar o número de **rounds**, colocar timer ou correlacionados.
   - Ataque simultaneo
+
+
+## 5 - Paredão BBB
+
+Para mim é o desafio mais interessante, e seria o preferido para desenvolver se fosse apenas 1 deles dentro do tempo estipulado.
+Um sistema desta proporção que recebe uma carga imensa de requisições em poucos minutos e com picos inesperados causados talvez por 
+um comentário nas redes sociais, propaganda de TV e até mesmo durante a transmissão da final com certeza terá muitos desafios de escalabilidade,
+tolerância a falha e também de segurança, pois a cada dia que passa os bots estão mais sofisticados.
+
+Eu dividiria em mais partes das que foram propostas. Por quê?
+
+Acho que dividiria em 3.
+- Serviço de autenticação
+  - Banco de dado exclusivo
+- Registro do voto   - recebe a requisição de voto / manda para o serviço de mensageria
+  - Precisaria de autenticação
+  - Banco só com dados dos participantes do paredão
+  
+- Consulta de votos  - recebe a requisição de voto
+  - Banco com os dados dos votos computados
+  - Precisaria de autenticação, exclusiva dos participantes do programa
+
+- Computação do voto - processa as mensagens, computando os votos
+  - Rabbit MQ ou Kafka
+
+Partiria da premissa de fazer o on-premisse usando o Kubernets, tornando agnóstico a algum provedor de Cloud que já nos dá muitos
+recursos que precisamos, mas que no fim acaba acoplando sua a solução a elas. E temos o fator pico, que pode gerar um gasto
+não previsto.
+
+No quesito segurança eu nunca tive uma experiência diferente do OAuth. 
+Neste caso por causa dos bots eu não saberia como lidar com isso neste momento, pois muitos deles já conseguem quebrar os captchas.
+Acho que um proxy na frente poderia fazer o papel de filter e criar algumas limitações por token, ip do requisitante entre outros.code
+
+Por que eu usaria um barramento entre os dois, aceitaria uma requisição de voto, responderia imediatamente para o cliente que o voto será computado e encaminharia este voto para um fila, onde eu poderia conectador vários consumers para computador este voto.
+
+Tenho mais conhecimento do SpringBoot, mas quando começamos a colocar no Kubernets, percebemos que ele consome bastante recurso como memória e demora a subir os pods quando a necessidade de replica. No caso tentaria utilizar outros microframeworks, como Quarkus ou Micronault por exemplo.
+
+Veja o diagrama abaixo, é um protótipo de como eu penso nesta solução.
+Digamos que é um primeiro desenho e que claro com as discussões técnicas de um grupo, poderia sofrer muitas mudanças.
+
+
+### Diagrama
+![Diagrama Votação](/diagrama_do_serviço_de_votação.png)
+
+Escolhi o Golang para fazer o testes porque tenho gostado da linguagem e queria ter desafios para fixar ainda mais.
+
+Caso queira ver meu código em JAVA vou deixar 2 repositórios que eu codei recentemente em outros desafios.
+
+[Java Swagger RestApi](https://github.com/SamuelsSantos/controle-patrimonial)
+
+[Quarkus Codenation](https://github.com/SamuelsSantos/codenation-desafio)
